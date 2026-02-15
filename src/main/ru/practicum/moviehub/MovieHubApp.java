@@ -8,5 +8,6 @@ public class MovieHubApp {
         final MoviesServer server = new MoviesServer(new MoviesStore(), 8080);
         Runtime.getRuntime().addShutdownHook(new Thread(server::stop));
         server.start();
+        System.out.println(" server.start");
     }
 }
