@@ -10,7 +10,9 @@ public class ErrorResponse {
         this.error = error;
         this.details = details;
     }
-
+    public ErrorResponse(String error) {
+        this.error = error;
+    }
 
     public String getError() { return error; }
     public List<String> getDetails() { return details; }

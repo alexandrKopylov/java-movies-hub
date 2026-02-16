@@ -7,4 +7,15 @@ public enum Endpoint {
     POST_MOVIES,
     DELETE_MOVIES_ID,
     UNKNOWN
+
+    /*
+    GET /movies.
+    POST /movies
+    GET /movies/{id}
+    DELETE /movies/{id}
+    GET /movies?year=YYYY
+    
+     */
+
+
 }

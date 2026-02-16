@@ -1,13 +1,26 @@
 package ru.practicum.moviehub.http;
 
 import com.sun.net.httpserver.HttpExchange;
+import ru.practicum.moviehub.api.ErrorResponse;
+import ru.practicum.moviehub.handlers.HandleGetMovies;
+import ru.practicum.moviehub.store.MoviesStore;
+import ru.practicum.moviehub.util.HttpResponseUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
+
+import static ru.practicum.moviehub.handlers.AbstractHandler.GSON;
 
 public class MoviesHandler extends BaseHttpHandler {
+    HandleGetMovies handleGetMovies;
+    public MoviesHandler(MoviesStore store) {
+        super(store);
+        handleGetMovies = new HandleGetMovies();
+    }
+
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         String requestPath = exchange.getRequestURI().getPath();
@@ -16,12 +29,12 @@ public class MoviesHandler extends BaseHttpHandler {
         Endpoint endpoint = getEndpoint(requestPath, requestMethod, query);
 
         switch (endpoint) {
-            case GET_MOVIES -> handleGetMovies(exchange);
-            case GET_MOVIES_ID -> handleGetMoviesById(exchange);
-            case GET_MOVIES_YEAR -> handleGetMoviesByYear(exchange);
-            case POST_MOVIES -> handlePostMovies(exchange);
-            case DELETE_MOVIES_ID -> handleDeleteMoviesById(exchange);
-            default -> writeResponse(exchange, "Такого эндпоинта не существует", 404);
+            case GET_MOVIES -> handleGetMovies.process(exchange , store);//handleGetMovies(exchange);
+           // case GET_MOVIES_ID -> handleGetMoviesById(exchange,store);
+           // case GET_MOVIES_YEAR -> handleGetMoviesByYear(exchange);
+           // case POST_MOVIES -> handlePostMovies(exchange);
+           // case DELETE_MOVIES_ID -> handleDeleteMoviesById(exchange);
+            default -> HttpResponseUtils.sendError(exchange, 405, "Метод не поддерживается");
         }
     }
 
@@ -50,7 +63,7 @@ public class MoviesHandler extends BaseHttpHandler {
         String[] pathParts = requestPath.split("/");
         if (pathParts.length == 2 &&
                 requestMethod.equals("GET") &&
-                query.toUpperCase().startsWith("YEAR=")) {
+                 (Objects.nonNull(query) && query.toUpperCase().startsWith("YEAR="))) {
             return Endpoint.GET_MOVIES_YEAR;
         } else if (pathParts.length == 2 && requestMethod.equals("POST")) {
             return Endpoint.POST_MOVIES;
@@ -64,15 +77,8 @@ public class MoviesHandler extends BaseHttpHandler {
         return Endpoint.UNKNOWN;
     }
 
-    private void writeResponse(HttpExchange exchange,
-                               String responseString,
-                               int responseCode) throws IOException {
 
-        exchange.sendResponseHeaders(responseCode, 0);
-        try (OutputStream os = exchange.getResponseBody()) {
-            os.write(responseString.getBytes());
-        }
     }
 
 
-}
+
