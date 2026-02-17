@@ -36,8 +36,8 @@ public class HandlePostMovies extends AbstractHandler{
 
         try {
             // Парсим JSON
-            Movie movie = GSON.fromJson(requestBody.toString(), Movie.class);
-
+            Movie tmpMovie = GSON.fromJson(requestBody.toString(), Movie.class);
+Movie movie = new Movie(tmpMovie.getTitle(), tmpMovie.getYear());
             // Валидация
             List<String> validationErrors = MovieValidator.validate(movie);
             if (!validationErrors.isEmpty()) {

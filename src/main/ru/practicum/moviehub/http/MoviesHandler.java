@@ -2,10 +2,7 @@ package ru.practicum.moviehub.http;
 
 import com.sun.net.httpserver.HttpExchange;
 import ru.practicum.moviehub.api.ErrorResponse;
-import ru.practicum.moviehub.handlers.HandleDeleteMoviesById;
-import ru.practicum.moviehub.handlers.HandleGetMovies;
-import ru.practicum.moviehub.handlers.HandleGetMoviesById;
-import ru.practicum.moviehub.handlers.HandlePostMovies;
+import ru.practicum.moviehub.handlers.*;
 import ru.practicum.moviehub.store.MoviesStore;
 import ru.practicum.moviehub.util.HttpResponseUtils;
 
@@ -22,6 +19,7 @@ public class MoviesHandler extends BaseHttpHandler {
    private final HandlePostMovies handlePostMovies  = new HandlePostMovies();
     private final HandleDeleteMoviesById  handleDeleteMoviesById = new HandleDeleteMoviesById();
     private final HandleGetMoviesById handleGetMoviesById = new HandleGetMoviesById();
+private final HandleGetMoviesByYear handleGetMoviesByYear = new HandleGetMoviesByYear();
 
     public MoviesHandler(MoviesStore store) {
         super(store);
@@ -37,7 +35,7 @@ public class MoviesHandler extends BaseHttpHandler {
         switch (endpoint) {
             case GET_MOVIES -> handleGetMovies.process(exchange , store);
             case GET_MOVIES_ID -> handleGetMoviesById.process(exchange,store);
-            case GET_MOVIES_YEAR -> handleGetMoviesByYear(exchange);
+            case GET_MOVIES_YEAR -> handleGetMoviesByYear.process(exchange, store);
             case POST_MOVIES -> handlePostMovies.process(exchange, store);
             case DELETE_MOVIES_ID -> handleDeleteMoviesById.process(exchange,store);
             default -> HttpResponseUtils.sendError(exchange, 405, "Метод не поддерживается");

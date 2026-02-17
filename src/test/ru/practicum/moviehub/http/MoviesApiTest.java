@@ -9,6 +9,7 @@ import ru.practicum.moviehub.api.ErrorResponse;
 import ru.practicum.moviehub.model.Movie;
 import ru.practicum.moviehub.store.MoviesStore;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -104,8 +105,17 @@ public class MoviesApiTest {
         return sendRequest(request);
     }
 
+
+
+
     private HttpResponse<String> createMovie(String title, int year) throws Exception {
-        String movieJson = String.format("{\"title\":\"%s\",\"year\":%d}", title, year);
+       // String movieJson = String.format("{\"title\":\"%s\",\"year\":%d}", title, year);
+
+        Movie movie = new Movie(title, year);
+        //String movieJson = GSON.fromJson(movie);
+        String movieJson = GSON.toJson(movie);
+
+
         HttpRequest request = createPostRequest(MOVIES_ENDPOINT, movieJson);
         return sendRequest(request);
     }
@@ -139,6 +149,36 @@ public class MoviesApiTest {
         assertTrue(body.contains("\"error\""), "Должно содержать поле error");
     }
 
+
+
+
+
+
+
+    private HttpResponse<String> addMovie (String title, int year ) throws IOException, InterruptedException {
+        String movieJson = String.format("{\"title\":\"%s\",\"year\":%d}", title, year);
+
+
+       // Movie movie = new Movie(title, year);
+       // String movieJson = GSON.toJson(movie);
+        HttpRequest request  =   HttpRequest.newBuilder()
+                .uri(URI.create ("http://localhost:8080/movies"))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(movieJson, StandardCharsets.UTF_8))
+                .build();
+        HttpClient client = HttpClient.newHttpClient();
+             return  client.send(request, HttpResponse.BodyHandlers.ofString());
+
+
+        // client.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+      //  private static final String CONTENT_TYPE_JSON = "application/json";
+      //  private static final String CONTENT_TYPE_HEADER = "Content-Type";
+      //  private static final String FULL_CONTENT_TYPE = "application/json; charset=UTF-8";
+
+    }
+
+
+
     @Test
     void getMovies_whenEmpty_returnsEmptyArray() throws Exception {
         HttpResponse<String> response = getMovies();
@@ -153,7 +193,21 @@ public class MoviesApiTest {
     @Test
     void getMovies_whenMoviesExist_returnsMoviesList() throws Exception {
         createMovie(MOVIE_TITLE_1, MOVIE_YEAR_1);
+
+      //  HttpResponse<String> response =    addMovie("gggg", 1990);
+
+      // String tt =  response.body();
+       // System.out.println(tt);
+
+        addMovie("rrrr", 1990);
         createMovie(MOVIE_TITLE_2, MOVIE_YEAR_2);
+
+
+
+
+
+
+
 
         HttpResponse<String> response = getMovies();
 
@@ -175,13 +229,19 @@ public class MoviesApiTest {
     @Test
     void postMovies_withValidData_createsMovie() throws Exception {
         HttpResponse<String> response = createMovie(MOVIE_TITLE_1, MOVIE_YEAR_1);
+       //  HttpResponse<String> response = addMovie(MOVIE_TITLE_1, MOVIE_YEAR_1);
 
         assertStatusCode(response, STATUS_CREATED, "POST /movies должен вернуть 201 Created");
         assertContentType(response);
 
         String responseBody = response.body();
-        assertNotNull(responseBody, "Тело ответа не должно быть null");
+        System.out.println(responseBody);
 
+        Movie m = GSON.fromJson(responseBody, Movie.class);
+        System.out.println(m);
+
+        assertNotNull(responseBody, "Тело ответа не должно быть null");
+        System.out.println("\"id\"");
         assertTrue(responseBody.contains("\"id\""), "Ответ должен содержать ID фильма");
         assertTrue(responseBody.contains("\"title\":\"" + MOVIE_TITLE_1 + "\""), "Ответ должен содержать title");
         assertTrue(responseBody.contains("\"year\":" + MOVIE_YEAR_1), "Ответ должен содержать year");

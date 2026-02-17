@@ -12,12 +12,9 @@ import java.util.List;
 public class HandleGetMoviesByYear  extends AbstractHandler{
     @Override
     public void process(HttpExchange exchange, MoviesStore store) throws IOException {
-
-
         // Получаем query параметры
         String query = exchange.getRequestURI().getQuery();
         List<Movie> movies = null;
-
 
             // Извлекаем параметр year
             String yearParam = null;
