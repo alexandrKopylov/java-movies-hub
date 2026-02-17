@@ -2,7 +2,10 @@ package ru.practicum.moviehub.http;
 
 import com.sun.net.httpserver.HttpExchange;
 import ru.practicum.moviehub.api.ErrorResponse;
+import ru.practicum.moviehub.handlers.HandleDeleteMoviesById;
 import ru.practicum.moviehub.handlers.HandleGetMovies;
+import ru.practicum.moviehub.handlers.HandleGetMoviesById;
+import ru.practicum.moviehub.handlers.HandlePostMovies;
 import ru.practicum.moviehub.store.MoviesStore;
 import ru.practicum.moviehub.util.HttpResponseUtils;
 
@@ -15,10 +18,13 @@ import java.util.Objects;
 import static ru.practicum.moviehub.handlers.AbstractHandler.GSON;
 
 public class MoviesHandler extends BaseHttpHandler {
-    HandleGetMovies handleGetMovies;
+   private final HandleGetMovies handleGetMovies = new HandleGetMovies();
+   private final HandlePostMovies handlePostMovies  = new HandlePostMovies();
+    private final HandleDeleteMoviesById  handleDeleteMoviesById = new HandleDeleteMoviesById();
+    private final HandleGetMoviesById handleGetMoviesById = new HandleGetMoviesById();
+
     public MoviesHandler(MoviesStore store) {
         super(store);
-        handleGetMovies = new HandleGetMovies();
     }
 
     @Override
@@ -29,35 +35,15 @@ public class MoviesHandler extends BaseHttpHandler {
         Endpoint endpoint = getEndpoint(requestPath, requestMethod, query);
 
         switch (endpoint) {
-            case GET_MOVIES -> handleGetMovies.process(exchange , store);//handleGetMovies(exchange);
-           // case GET_MOVIES_ID -> handleGetMoviesById(exchange,store);
-           // case GET_MOVIES_YEAR -> handleGetMoviesByYear(exchange);
-           // case POST_MOVIES -> handlePostMovies(exchange);
-           // case DELETE_MOVIES_ID -> handleDeleteMoviesById(exchange);
+            case GET_MOVIES -> handleGetMovies.process(exchange , store);
+            case GET_MOVIES_ID -> handleGetMoviesById.process(exchange,store);
+            case GET_MOVIES_YEAR -> handleGetMoviesByYear(exchange);
+            case POST_MOVIES -> handlePostMovies.process(exchange, store);
+            case DELETE_MOVIES_ID -> handleDeleteMoviesById.process(exchange,store);
             default -> HttpResponseUtils.sendError(exchange, 405, "Метод не поддерживается");
         }
     }
 
-    private void handleDeleteMoviesById(HttpExchange exchange) throws IOException {
-
-    }
-
-    private void handlePostMovies(HttpExchange exchange) throws IOException {
-
-    }
-
-    private void handleGetMoviesByYear(HttpExchange exchange) throws IOException {
-
-    }
-
-    private void handleGetMoviesById(HttpExchange exchange) throws IOException {
-
-    }
-
-    private void handleGetMovies(HttpExchange exchange) throws IOException {
-
-
-    }
 
     private Endpoint getEndpoint(String requestPath, String requestMethod, String query) {
         String[] pathParts = requestPath.split("/");
@@ -76,8 +62,6 @@ public class MoviesHandler extends BaseHttpHandler {
         }
         return Endpoint.UNKNOWN;
     }
-
-
     }
 
 

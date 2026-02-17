@@ -8,8 +8,9 @@ import java.util.stream.Collectors;
 public class MoviesStore {
     private final Map<Integer, Movie> store = new HashMap<>();
 
-    public void add(Movie movie) {
+    public Movie add(Movie movie) {
         store.put(movie.getId(), movie);
+        return movie;
     }
 
     public Optional<Movie> getById(int id) {

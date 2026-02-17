@@ -29,6 +29,13 @@ public class HttpResponseUtils {
         }
     }
 
+
+    public static void sendResponse(HttpExchange exchange, int statusCode) throws IOException {
+        exchange.getResponseHeaders().set("Content-Type", "application/json; charset=UTF-8");
+        exchange.sendResponseHeaders(statusCode, 0);
+        exchange.getResponseBody().close();
+    }
+
     public static void sendError(
             HttpExchange exchange,
             int statusCode,
