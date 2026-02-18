@@ -10,5 +10,5 @@ import java.io.IOException;
 public abstract class AbstractHandler {
     public static final Gson GSON = new GsonBuilder().create();
 
-    abstract public void process(HttpExchange exchange, MoviesStore store) throws IOException;
+    public abstract void process(HttpExchange exchange, MoviesStore store) throws IOException;
 }
