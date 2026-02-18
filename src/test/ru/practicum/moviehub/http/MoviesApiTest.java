@@ -52,14 +52,14 @@ public class MoviesApiTest {
     private HttpClient client;
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         server = new MoviesServer(new MoviesStore(), SERVER_PORT);
         server.start();
         client = createHttpClient();
     }
 
     @AfterEach
-    void tearDown() {
+    public void tearDown() {
         if (server != null) {
             server.stop();
         }
@@ -120,7 +120,7 @@ public class MoviesApiTest {
     }
 
     @Test
-    void getMovies_whenEmpty_returnsEmptyArray() throws Exception {
+    public void getMovies_whenEmpty_returnsEmptyArray() throws Exception {
         HttpResponse<String> response = getMovies("http://localhost:8080/movies");
         assertStatusCode(response, STATUS_OK, "GET /movies должен вернуть 200");
         assertContentType(response);
@@ -129,7 +129,7 @@ public class MoviesApiTest {
     }
 
     @Test
-    void getMovies_whenMoviesExist_returnsMoviesList() throws Exception {
+    public void getMovies_whenMoviesExist_returnsMoviesList() throws Exception {
         addMovie(MOVIE_TITLE_1, MOVIE_YEAR_1);
         addMovie(MOVIE_TITLE_2, MOVIE_YEAR_2);
         HttpResponse<String> response = getMovies("http://localhost:8080/movies");
@@ -148,7 +148,7 @@ public class MoviesApiTest {
     }
 
     @Test
-    void postMovies_withValidData_createsMovie() throws Exception {
+    public void postMovies_withValidData_createsMovie() throws Exception {
         HttpResponse<String> response = addMovie(MOVIE_TITLE_1, MOVIE_YEAR_1);
         assertStatusCode(response, STATUS_CREATED, "POST /movies должен вернуть 201 Created");
         assertContentType(response);
@@ -167,7 +167,7 @@ public class MoviesApiTest {
     }
 
     @Test
-    void postMovies_withEmptyTitle_returnsValidationError() throws Exception {
+    public void postMovies_withEmptyTitle_returnsValidationError() throws Exception {
         HttpResponse<String> response = addMovie("", MOVIE_YEAR_1);
         assertStatusCode(response, STATUS_UNPROCESSABLE_ENTITY, "Должен вернуть 422 при пустом title");
         String body = response.body();
@@ -180,7 +180,7 @@ public class MoviesApiTest {
     }
 
     @Test
-    void postMovies_withTooLongTitle_returnsValidationError() throws Exception {
+    public void postMovies_withTooLongTitle_returnsValidationError() throws Exception {
         String longTitle = "A".repeat(101);
         HttpResponse<String> response = addMovie(longTitle, MOVIE_YEAR_1);
         assertStatusCode(response, STATUS_UNPROCESSABLE_ENTITY, "Должен вернуть 422 при слишком длинном title");
@@ -192,7 +192,7 @@ public class MoviesApiTest {
     }
 
     @Test
-    void postMovies_withInvalidYear_returnsValidationError() throws Exception {
+    public void postMovies_withInvalidYear_returnsValidationError() throws Exception {
         HttpResponse<String> response = addMovie(MOVIE_TITLE_1, 1800);
 
         assertStatusCode(response, STATUS_UNPROCESSABLE_ENTITY, "Должен вернуть 422 при неверном year");
@@ -204,7 +204,7 @@ public class MoviesApiTest {
     }
 
     @Test
-    void postMovies_withWrongContentType_returns415() throws Exception {
+    public void postMovies_withWrongContentType_returns415() throws Exception {
         String movieJson = "{\"title\":\"Film5\",\"year\":2025}";
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(MOVIES_ENDPOINT))
@@ -220,7 +220,7 @@ public class MoviesApiTest {
     }
 
     @Test
-    void postMovies_withInvalidJson_returns400() throws Exception {
+    public void postMovies_withInvalidJson_returns400() throws Exception {
         String invalidJson = "{ это неверный json }";
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("http://localhost:8080/movies"))
@@ -235,7 +235,7 @@ public class MoviesApiTest {
     }
 
     @Test
-    void getMovieById_whenExists_returnsMovie() throws Exception {
+    public void getMovieById_whenExists_returnsMovie() throws Exception {
         HttpResponse<String> createResponse = addMovie(MOVIE_TITLE_1, MOVIE_YEAR_1);
         assertStatusCode(createResponse, STATUS_CREATED, "Должен вернуть 201 при создании фильма");
 
@@ -254,7 +254,7 @@ public class MoviesApiTest {
     }
 
     @Test
-    void getMovieById_whenNotFound_returns404() throws Exception {
+    public void getMovieById_whenNotFound_returns404() throws Exception {
         HttpResponse<String> response = getMovies("http://localhost:8080/movies/" + 188);
 
         assertStatusCode(response, STATUS_NOT_FOUND, "Должен вернуть 404 при несуществующем ID");
@@ -262,14 +262,14 @@ public class MoviesApiTest {
     }
 
     @Test
-    void getMovieById_withNonNumericId_returns400() throws Exception {
+    public void getMovieById_withNonNumericId_returns400() throws Exception {
         HttpResponse<String> response = getMovies("http://localhost:8080/movies/fgh");
         assertStatusCode(response, STATUS_BAD_REQUEST, "Должен вернуть 400 при нечисловом ID");
         assertErrorResponse(response);
     }
 
     @Test
-    void deleteMovie_whenExists_returns204() throws Exception {
+    public void deleteMovie_whenExists_returns204() throws Exception {
         HttpResponse<String> createResponse = addMovie(MOVIE_TITLE_1, MOVIE_YEAR_1);
         assertStatusCode(createResponse, STATUS_CREATED, "Должен вернуть 201 при создании фильма");
 
@@ -283,21 +283,21 @@ public class MoviesApiTest {
     }
 
     @Test
-    void deleteMovie_whenNotFound_returns404() throws Exception {
+    public void deleteMovie_whenNotFound_returns404() throws Exception {
         HttpResponse<String> response = deleteMovieById(125);
         assertStatusCode(response, STATUS_NOT_FOUND, "Должен вернуть 404 при несуществующем ID");
         assertErrorResponse(response);
     }
 
     @Test
-    void deleteMovie_withNonNumericId_returns400() throws Exception {
+    public void deleteMovie_withNonNumericId_returns400() throws Exception {
         HttpResponse<String> response = deleteMovieById("frt");
         assertStatusCode(response, STATUS_BAD_REQUEST, "Должен вернуть 400 при нечисловом ID");
         assertErrorResponse(response);
     }
 
     @Test
-    void getMoviesByYear_whenMoviesExist_returnsFilteredList() throws Exception {
+    public void getMoviesByYear_whenMoviesExist_returnsFilteredList() throws Exception {
         addMovie(MOVIE_TITLE_1, MOVIE_YEAR_1);
         addMovie(MOVIE_TITLE_2, MOVIE_YEAR_2);
         addMovie(MOVIE_TITLE_3, MOVIE_YEAR_3);
@@ -315,7 +315,7 @@ public class MoviesApiTest {
     }
 
     @Test
-    void getMoviesByYear_whenNoMatches_returnsEmptyArray() throws Exception {
+    public void getMoviesByYear_whenNoMatches_returnsEmptyArray() throws Exception {
         addMovie(MOVIE_TITLE_1, MOVIE_YEAR_1);
         HttpResponse<String> response = getMovies("http://localhost:8080/movies?year=" + 1985);
         assertStatusCode(response, STATUS_OK, "Должен вернуть 200");
@@ -324,7 +324,7 @@ public class MoviesApiTest {
     }
 
     @Test
-    void getMoviesByYear_withInvalidYear_returns400() throws Exception {
+    public void getMoviesByYear_withInvalidYear_returns400() throws Exception {
         HttpResponse<String> response = getMovies("http://localhost:8080/movies?year=XXX");
         assertStatusCode(response, STATUS_BAD_REQUEST, "Должен вернуть 400 при нечисловом году");
         assertErrorResponse(response);

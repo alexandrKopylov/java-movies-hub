@@ -6,7 +6,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class MoviesStore {
-    static private int idIndex = 0;
+    private static int idIndex = 0;
     private final Map<Integer, Movie> store = new HashMap<>();
 
     public Movie add(Movie movie) {
