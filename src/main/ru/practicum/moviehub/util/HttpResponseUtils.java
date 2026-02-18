@@ -18,7 +18,7 @@ public class HttpResponseUtils {
             int statusCode,
             Object responseBody
     ) throws IOException {
-        String responseJson = GSON.toJson(responseBody);
+        String responseJson = (String) responseBody ;  //GSON.toJson(responseBody);
         byte[] responseBytes = responseJson.getBytes(StandardCharsets.UTF_8);
 
         exchange.getResponseHeaders().set("Content-Type", "application/json; charset=UTF-8");

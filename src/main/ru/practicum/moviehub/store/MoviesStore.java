@@ -6,10 +6,13 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class MoviesStore {
+      static private int idIndex = 0;
     private final Map<Integer, Movie> store = new HashMap<>();
 
     public Movie add(Movie movie) {
-        store.put(movie.getId(), movie);
+        // idIndex++;
+        movie.setId(++idIndex);
+        store.put(idIndex, movie);
         return movie;
     }
 
@@ -30,4 +33,13 @@ public class MoviesStore {
     public boolean delete(int id) {
         return store.remove(id) != null;
     }
+
+    public static void main(String[] args) {
+        Movie nn = new Movie("ggg", 45);
+        MoviesStore ms = new MoviesStore();
+        ms.add(nn);
+
+
+    }
+
 }

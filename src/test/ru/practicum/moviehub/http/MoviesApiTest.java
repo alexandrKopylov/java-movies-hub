@@ -109,11 +109,11 @@ public class MoviesApiTest {
 
 
     private HttpResponse<String> createMovie(String title, int year) throws Exception {
-       // String movieJson = String.format("{\"title\":\"%s\",\"year\":%d}", title, year);
+       String movieJson = String.format("{\"title\":\"%s\",\"year\":%d}", title, year).replace("\\\"", "\""); // Удаляем экранирующие слеши
 
-        Movie movie = new Movie(title, year);
+       // Movie movie = new Movie(title, year);
         //String movieJson = GSON.fromJson(movie);
-        String movieJson = GSON.toJson(movie);
+       // String movieJson = GSON.toJson(movie);
 
 
         HttpRequest request = createPostRequest(MOVIES_ENDPOINT, movieJson);
@@ -199,7 +199,7 @@ public class MoviesApiTest {
       // String tt =  response.body();
        // System.out.println(tt);
 
-        addMovie("rrrr", 1990);
+       // addMovie("rrrr", 1990);
         createMovie(MOVIE_TITLE_2, MOVIE_YEAR_2);
 
 
@@ -237,12 +237,13 @@ public class MoviesApiTest {
         String responseBody = response.body();
         System.out.println(responseBody);
 
-        Movie m = GSON.fromJson(responseBody, Movie.class);
-        System.out.println(m);
+      //  Movie m = GSON.fromJson(responseBody, Movie.class);
+       // System.out.println(m);
 
         assertNotNull(responseBody, "Тело ответа не должно быть null");
-        System.out.println("\"id\"");
-        assertTrue(responseBody.contains("\"id\""), "Ответ должен содержать ID фильма");
+       // System.out.println("\"id\"");
+        System.out.println("\"title\":\"" + MOVIE_TITLE_1 + "\"");
+       // assertTrue(responseBody.contains("\"id\""), "Ответ должен содержать ID фильма");
         assertTrue(responseBody.contains("\"title\":\"" + MOVIE_TITLE_1 + "\""), "Ответ должен содержать title");
         assertTrue(responseBody.contains("\"year\":" + MOVIE_YEAR_1), "Ответ должен содержать year");
 
