@@ -1,6 +1,5 @@
 package ru.practicum.moviehub.util;
 
-import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
 import ru.practicum.moviehub.api.ErrorResponse;
 
