@@ -9,13 +9,12 @@ import ru.practicum.moviehub.util.HttpResponseUtils;
 import java.io.IOException;
 import java.util.Optional;
 
-public class HandleGetMoviesById extends AbstractHandler{
+public class HandleGetMoviesById extends AbstractHandler {
     @Override
     public void process(HttpExchange exchange, MoviesStore store) throws IOException {
         String path = exchange.getRequestURI().getPath();
         String[] pathParts = path.split("/");
 
-        // Проверяем формат пути: /movies/{id}
         if (pathParts.length != 3) {
             ErrorResponse error = new ErrorResponse("Не найдено");
             HttpResponseUtils.sendResponse(exchange, 404, GSON.toJson(error));
@@ -23,8 +22,6 @@ public class HandleGetMoviesById extends AbstractHandler{
         }
 
         String idParam = pathParts[2];
-
-        // Проверяем, что ID - число
         int id;
         try {
             id = Integer.parseInt(idParam);
@@ -34,17 +31,13 @@ public class HandleGetMoviesById extends AbstractHandler{
             return;
         }
 
-        // Ищем фильм
-       Optional<Movie> movieOptional = store.getById(id);
+        Optional<Movie> movieOptional = store.getById(id);
         if (movieOptional.isPresent()) {
-            // Возвращаем фильм
             String response = GSON.toJson(movieOptional.get());
             HttpResponseUtils.sendResponse(exchange, 200, response);
-        }else {
+        } else {
             ErrorResponse error = new ErrorResponse("Фильм не найден");
             HttpResponseUtils.sendResponse(exchange, 404, GSON.toJson(error));
         }
-
-
     }
 }

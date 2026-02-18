@@ -1,7 +1,5 @@
 package ru.practicum.moviehub.validator;
 
-
-
 import ru.practicum.moviehub.model.Movie;
 
 import java.time.Year;
@@ -25,7 +23,6 @@ public class MovieValidator {
         } else if (movie.getYear() > currentYear + 1) {
             errors.add("год должен быть не более " + (currentYear + 1));
         }
-
         return errors;
     }
 }

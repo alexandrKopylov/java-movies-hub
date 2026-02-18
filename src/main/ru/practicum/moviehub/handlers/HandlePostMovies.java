@@ -13,10 +13,9 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-public class HandlePostMovies extends AbstractHandler{
+public class HandlePostMovies extends AbstractHandler {
     @Override
     public void process(HttpExchange exchange, MoviesStore store) throws IOException {
-        // Проверяем Content-Type
         String contentType = exchange.getRequestHeaders().getFirst("Content-Type");
         if (contentType == null || !contentType.contains("application/json")) {
             ErrorResponse error = new ErrorResponse("Unsupported Media Type");
@@ -24,7 +23,6 @@ public class HandlePostMovies extends AbstractHandler{
             return;
         }
 
-        // Читаем тело запроса
         StringBuilder requestBody = new StringBuilder();
         try (BufferedReader reader = new BufferedReader(
                 new InputStreamReader(exchange.getRequestBody(), StandardCharsets.UTF_8))) {
@@ -35,30 +33,20 @@ public class HandlePostMovies extends AbstractHandler{
         }
 
         try {
-            // Парсим JSON
             Movie tmpMovie = GSON.fromJson(requestBody.toString(), Movie.class);
-Movie movie = new Movie(tmpMovie.getTitle(), tmpMovie.getYear());
-            // Валидация
+            Movie movie = new Movie(tmpMovie.getTitle(), tmpMovie.getYear());
             List<String> validationErrors = MovieValidator.validate(movie);
             if (!validationErrors.isEmpty()) {
                 ErrorResponse errorResponse = new ErrorResponse("Ошибка валидации", validationErrors);
                 HttpResponseUtils.sendResponse(exchange, 422, GSON.toJson(errorResponse));
                 return;
             }
-
-            // Сохраняем фильм
             Movie createdMovie = store.add(movie);
-
-            // Возвращаем созданный фильм
             String response = GSON.toJson(createdMovie);
             HttpResponseUtils.sendResponse(exchange, 201, response);
-
         } catch (Exception e) {
-            // Некорректный JSON
             ErrorResponse error = new ErrorResponse("Некорректный JSON");
             HttpResponseUtils.sendResponse(exchange, 400, GSON.toJson(error));
         }
-
-
     }
 }

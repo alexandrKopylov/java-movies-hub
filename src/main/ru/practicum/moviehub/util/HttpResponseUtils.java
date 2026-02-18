@@ -1,7 +1,5 @@
 package ru.practicum.moviehub.util;
 
-
-
 import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
 import ru.practicum.moviehub.api.ErrorResponse;
@@ -11,14 +9,13 @@ import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 
 public class HttpResponseUtils {
-    private static final Gson GSON = new Gson().newBuilder().create();
 
     public static void sendResponse(
             HttpExchange exchange,
             int statusCode,
             Object responseBody
     ) throws IOException {
-        String responseJson = (String) responseBody ;  //GSON.toJson(responseBody);
+        String responseJson = (String) responseBody;  //GSON.toJson(responseBody);
         byte[] responseBytes = responseJson.getBytes(StandardCharsets.UTF_8);
 
         exchange.getResponseHeaders().set("Content-Type", "application/json; charset=UTF-8");
@@ -28,7 +25,6 @@ public class HttpResponseUtils {
             os.write(responseBytes);
         }
     }
-
 
     public static void sendResponse(HttpExchange exchange, int statusCode) throws IOException {
         exchange.getResponseHeaders().set("Content-Type", "application/json; charset=UTF-8");

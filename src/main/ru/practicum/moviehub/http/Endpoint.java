@@ -14,8 +14,5 @@ public enum Endpoint {
     GET /movies/{id}
     DELETE /movies/{id}
     GET /movies?year=YYYY
-    
      */
-
-
 }

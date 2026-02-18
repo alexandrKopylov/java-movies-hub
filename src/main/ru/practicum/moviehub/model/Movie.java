@@ -3,11 +3,9 @@ package ru.practicum.moviehub.model;
 import java.util.Objects;
 
 public class Movie {
-    //  static private int idIndex = 0;
     private int id;
     private final String title;
     private final int year;
-
 
     public Movie(String title, int year) {
         this.title = title;
