@@ -17,6 +17,7 @@ public class HandlePostMovies extends AbstractHandler {
     @Override
     public void process(HttpExchange exchange, MoviesStore store) throws IOException {
         String contentType = exchange.getRequestHeaders().getFirst("Content-Type");
+
         if (contentType == null || !contentType.contains("application/json")) {
             ErrorResponse error = new ErrorResponse("Unsupported Media Type");
             HttpResponseUtils.sendResponse(exchange, 415, GSON.toJson(error));
@@ -24,8 +25,8 @@ public class HandlePostMovies extends AbstractHandler {
         }
 
         StringBuilder requestBody = new StringBuilder();
-        try (BufferedReader reader = new BufferedReader(
-                new InputStreamReader(exchange.getRequestBody(), StandardCharsets.UTF_8))) {
+
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(exchange.getRequestBody(), StandardCharsets.UTF_8))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 requestBody.append(line);
@@ -36,11 +37,13 @@ public class HandlePostMovies extends AbstractHandler {
             Movie tmpMovie = GSON.fromJson(requestBody.toString(), Movie.class);
             Movie movie = new Movie(tmpMovie.getTitle(), tmpMovie.getYear());
             List<String> validationErrors = MovieValidator.validate(movie);
+
             if (!validationErrors.isEmpty()) {
                 ErrorResponse errorResponse = new ErrorResponse("Ошибка валидации", validationErrors);
                 HttpResponseUtils.sendResponse(exchange, 422, GSON.toJson(errorResponse));
                 return;
             }
+
             Movie createdMovie = store.add(movie);
             String response = GSON.toJson(createdMovie);
             HttpResponseUtils.sendResponse(exchange, 201, response);

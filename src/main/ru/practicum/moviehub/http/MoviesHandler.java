@@ -14,7 +14,6 @@ public class MoviesHandler extends BaseHttpHandler {
     private final HandleDeleteMoviesById handleDeleteMoviesById = new HandleDeleteMoviesById();
     private final HandleGetMoviesById handleGetMoviesById = new HandleGetMoviesById();
     private final HandleGetMoviesByYear handleGetMoviesByYear = new HandleGetMoviesByYear();
-
     public MoviesHandler(MoviesStore store) {
         super(store);
     }
@@ -38,9 +37,7 @@ public class MoviesHandler extends BaseHttpHandler {
 
     private Endpoint getEndpoint(String requestPath, String requestMethod, String query) {
         String[] pathParts = requestPath.split("/");
-        if (pathParts.length == 2 &&
-                requestMethod.equals("GET") &&
-                (Objects.nonNull(query) && query.toUpperCase().startsWith("YEAR="))) {
+        if (pathParts.length == 2 && requestMethod.equals("GET") && (Objects.nonNull(query) && query.toUpperCase().startsWith("YEAR="))) {
             return Endpoint.GET_MOVIES_YEAR;
         } else if (pathParts.length == 2 && requestMethod.equals("POST")) {
             return Endpoint.POST_MOVIES;
@@ -54,6 +51,3 @@ public class MoviesHandler extends BaseHttpHandler {
         return Endpoint.UNKNOWN;
     }
 }
-
-
-

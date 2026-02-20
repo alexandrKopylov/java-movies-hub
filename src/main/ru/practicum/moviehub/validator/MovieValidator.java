@@ -18,11 +18,13 @@ public class MovieValidator {
         }
 
         int currentYear = Year.now().getValue();
+
         if (movie.getYear() < 1888) {
             errors.add("год должен быть не менее 1888");
         } else if (movie.getYear() > currentYear + 1) {
             errors.add("год должен быть не более " + (currentYear + 1));
         }
+
         return errors;
     }
 }

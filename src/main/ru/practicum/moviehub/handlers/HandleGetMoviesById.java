@@ -23,6 +23,7 @@ public class HandleGetMoviesById extends AbstractHandler {
 
         String idParam = pathParts[2];
         int id;
+
         try {
             id = Integer.parseInt(idParam);
         } catch (NumberFormatException e) {
@@ -32,6 +33,7 @@ public class HandleGetMoviesById extends AbstractHandler {
         }
 
         Optional<Movie> movieOptional = store.getById(id);
+
         if (movieOptional.isPresent()) {
             String response = GSON.toJson(movieOptional.get());
             HttpResponseUtils.sendResponse(exchange, 200, response);
@@ -39,5 +41,6 @@ public class HandleGetMoviesById extends AbstractHandler {
             ErrorResponse error = new ErrorResponse("Фильм не найден");
             HttpResponseUtils.sendResponse(exchange, 404, GSON.toJson(error));
         }
+
     }
 }

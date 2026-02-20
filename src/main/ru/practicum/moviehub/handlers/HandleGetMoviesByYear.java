@@ -16,6 +16,7 @@ public class HandleGetMoviesByYear extends AbstractHandler {
         List<Movie> movies = null;
         String yearParam = null;
         String[] queryParams = query.split("&");
+
         for (String param : queryParams) {
             if (param.startsWith("year=")) {
                 yearParam = param.substring(5);
@@ -33,6 +34,7 @@ public class HandleGetMoviesByYear extends AbstractHandler {
                 return;
             }
         }
+
         String moviesJson = GSON.toJson(movies);
         HttpResponseUtils.sendResponse(exchange, 200, moviesJson);
     }

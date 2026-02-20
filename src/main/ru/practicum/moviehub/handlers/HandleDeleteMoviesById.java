@@ -21,8 +21,8 @@ public class HandleDeleteMoviesById extends AbstractHandler {
         }
 
         String idParam = pathParts[2];
-
         int id;
+
         try {
             id = Integer.parseInt(idParam);
         } catch (NumberFormatException e) {
@@ -32,6 +32,7 @@ public class HandleDeleteMoviesById extends AbstractHandler {
         }
 
         boolean deleted = store.delete(id);
+
         if (!deleted) {
             ErrorResponse error = new ErrorResponse("Фильм не найден");
             HttpResponseUtils.sendResponse(exchange, 404, GSON.toJson(error));

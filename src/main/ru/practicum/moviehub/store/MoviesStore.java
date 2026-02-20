@@ -32,10 +32,4 @@ public class MoviesStore {
     public boolean delete(int id) {
         return store.remove(id) != null;
     }
-
-    public static void main(String[] args) {
-        Movie nn = new Movie("ggg", 45);
-        MoviesStore ms = new MoviesStore();
-        ms.add(nn);
-    }
 }

@@ -2,19 +2,14 @@ package ru.practicum.moviehub.util;
 
 import com.sun.net.httpserver.HttpExchange;
 import ru.practicum.moviehub.api.ErrorResponse;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 
 public class HttpResponseUtils {
 
-    public static void sendResponse(
-            HttpExchange exchange,
-            int statusCode,
-            Object responseBody
-    ) throws IOException {
-        String responseJson = (String) responseBody;  //GSON.toJson(responseBody);
+    public static void sendResponse(HttpExchange exchange, int statusCode, Object responseBody) throws IOException {
+        String responseJson = (String) responseBody;
         byte[] responseBytes = responseJson.getBytes(StandardCharsets.UTF_8);
 
         exchange.getResponseHeaders().set("Content-Type", "application/json; charset=UTF-8");
@@ -31,11 +26,7 @@ public class HttpResponseUtils {
         exchange.getResponseBody().close();
     }
 
-    public static void sendError(
-            HttpExchange exchange,
-            int statusCode,
-            String message
-    ) throws IOException {
+    public static void sendError(HttpExchange exchange, int statusCode, String message) throws IOException {
         sendResponse(exchange, statusCode, new ErrorResponse(message));
     }
 }

@@ -139,10 +139,8 @@ public class MoviesApiTest {
         List<Movie> movies = GSON.fromJson(body, typeToken.getType());
 
         assertEquals(2, movies.size(), "Должен вернуть 2 фильма");
-
         boolean hasInterstellar = movies.stream().anyMatch(m -> MOVIE_TITLE_1.equals(m.getTitle()));
         boolean hasTenet = movies.stream().anyMatch(m -> MOVIE_TITLE_2.equals(m.getTitle()));
-
         assertTrue(hasInterstellar, "Должен содержать " + MOVIE_TITLE_1);
         assertTrue(hasTenet, "Должен содержать " + MOVIE_TITLE_2);
     }
@@ -161,7 +159,6 @@ public class MoviesApiTest {
 
         HttpResponse<String> getResponse = getMovies("http://localhost:8080/movies");
         String getBody = getResponse.body();
-
         assertNotEquals("[]", getBody, "Список фильмов не должен быть пустым после добавления");
         assertTrue(getBody.contains(MOVIE_TITLE_1), "Список должен содержать добавленный фильм");
     }
@@ -194,10 +191,8 @@ public class MoviesApiTest {
     @Test
     public void postMovies_withInvalidYear_returnsValidationError() throws Exception {
         HttpResponse<String> response = addMovie(MOVIE_TITLE_1, 1800);
-
         assertStatusCode(response, STATUS_UNPROCESSABLE_ENTITY, "Должен вернуть 422 при неверном year");
         assertErrorResponse(response);
-
         String body = response.body();
         assertTrue(body.contains("Ошибка валидации"), "Должна быть ошибка валидации");
         assertTrue(body.contains("год должен быть не менее 1888"), "Должна быть детальная ошибка");
@@ -211,7 +206,6 @@ public class MoviesApiTest {
                 .header(CONTENT_TYPE_HEADER, "text/plain")
                 .POST(HttpRequest.BodyPublishers.ofString(movieJson, StandardCharsets.UTF_8))
                 .build();
-
         HttpClient client = HttpClient.newHttpClient();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
@@ -276,7 +270,7 @@ public class MoviesApiTest {
         Movie createdMovie = GSON.fromJson(createResponse.body(), Movie.class);
         int movieId = createdMovie.getId();
 
-        HttpResponse<String> deleteResponse = deleteMovieById(movieId);  //deleteMovie(movieId);
+        HttpResponse<String> deleteResponse = deleteMovieById(movieId);
         assertStatusCode(deleteResponse, STATUS_NO_CONTENT, "Должен вернуть 204 при успешном удалении");
         HttpResponse<String> getResponse = getMovies("http://localhost:8080/movies/" + movieId);
         assertStatusCode(getResponse, STATUS_NOT_FOUND, "Фильм должен быть удален");
