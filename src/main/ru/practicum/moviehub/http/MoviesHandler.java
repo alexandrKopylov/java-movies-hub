@@ -14,6 +14,7 @@ public class MoviesHandler extends BaseHttpHandler {
     private final HandleDeleteMoviesById handleDeleteMoviesById = new HandleDeleteMoviesById();
     private final HandleGetMoviesById handleGetMoviesById = new HandleGetMoviesById();
     private final HandleGetMoviesByYear handleGetMoviesByYear = new HandleGetMoviesByYear();
+
     public MoviesHandler(MoviesStore store) {
         super(store);
     }
